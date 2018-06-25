@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
     String TAG="MainActivity";
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public void myMain(){
         String TAG="MainActivity";
         MTCNN mtcnn=new MTCNN(getAssets());
-        Bitmap bitmap=readFromAssets("2.jpg");
+        Bitmap bitmap=readFromAssets("hz.JPG");
         /*
         try {
             int[] tmp=new int[bitmap.getWidth()*bitmap.getHeight()];
@@ -52,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
         }*/
         //Bitmap bitmap=readFromAssets("ttt.jpg");
         try {
-            Rect[]rects=mtcnn.detectFaces(bitmap,35);
-            Utils.drawRects(bitmap,rects);
+            Vector<Box> boxes=mtcnn.detectFaces(bitmap,35);
+            for (int i=0;i<boxes.size();i++){
+                Utils.drawRect(bitmap,boxes.get(i).transform2Rect());
+                Utils.drawLandmark(bitmap,boxes.get(i).landmark);
+            }
             showImage(bitmap,R.id.imageView);
             if (mtcnn.tmp_bm!=null)
                 showImage(mtcnn.tmp_bm,R.id.imageView2);

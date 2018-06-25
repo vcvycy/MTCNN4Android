@@ -7,6 +7,7 @@ import android.content.ContentUris;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -306,15 +307,26 @@ public class MTCNN {
         inferenceInterface.feed(ONetInName,ONetIn,num,48,48,3);
         inferenceInterface.run(ONetOutName,false);
         //fetch
-        float[] ONetP=new float[num*2];
-        float[] ONetB=new float[num*4];
+        float[] ONetP=new float[num*2]; //prob
+        float[] ONetB=new float[num*4]; //bias
+        float[] ONetL=new float[num*10]; //landmark
         inferenceInterface.fetch(ONetOutName[0],ONetP);
         inferenceInterface.fetch(ONetOutName[1],ONetB);
+        inferenceInterface.fetch(ONetOutName[2],ONetL);
         //转换
         for (int i=0;i<num;i++) {
+            //prob
             boxes.get(i).score = ONetP[i * 2 + 1];
+            //bias
             for (int j=0;j<4;j++)
                 boxes.get(i).bbr[j]=ONetB[i*4+j];
+            //landmark
+            for (int j=0;j<5;j++) {
+                int x=(int) ONetL[i * 10 + j * 2];
+                int y= (int) ONetL[i * 10 + j * 2 + 1];
+                boxes.get(i).landmark[j] = new Point(x,y);
+                Log.i(TAG,"[*] landmarkd "+x+ "  "+y);
+            }
         }
     }
     //ONet
@@ -354,7 +366,7 @@ public class MTCNN {
      * 返回：
      *   人脸框
      */
-    public Rect[] detectFaces(Bitmap bitmap,int minFaceSize) {
+    public Vector<Box> detectFaces(Bitmap bitmap,int minFaceSize) {
         long t_start = System.currentTimeMillis();
         //【1】PNet generate candidate boxes
         Vector<Box> boxes=PNet(bitmap,minFaceSize);
@@ -366,7 +378,6 @@ public class MTCNN {
         boxes=ONet(bitmap,boxes);
         //return
          Log.i(TAG,"[*]Time:"+(System.currentTimeMillis()-t_start));
-        Rect[] rects=Utils.boxes2rects(boxes);
-        return  rects;
+        return  boxes;
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 import android.widget.ImageView;
@@ -21,20 +22,24 @@ public class Utils {
         try {
             Canvas canvas = new Canvas(bitmap);
             Paint paint = new Paint();
-            int r=(int)(Math.random()*255);
-            int g=(int)(Math.random()*255);
-            int b=(int)(Math.random()*255);
+            int r=255;//(int)(Math.random()*255);
+            int g=0;//(int)(Math.random()*255);
+            int b=0;//(int)(Math.random()*255);
             paint.setColor(Color.rgb(r, g, b));
-            paint.setStrokeWidth(3);
+            paint.setStrokeWidth(1+bitmap.getWidth()/500 );
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawRect(rect, paint);
         }catch (Exception e){
             Log.i("Utils","[*] error"+e);
         }
     }
-    public static void drawRects(Bitmap bitmap, Rect[] rects){
-        for (int i=0;i<rects.length;i++)
-            drawRect(bitmap,rects[i]);
+    public static void drawLandmark(Bitmap bitmap, Point[] landmark){
+        for (int i=0;i<landmark.length;i++){
+            int x=landmark[i].x;
+            int y=landmark[i].y;
+            //Log.i("Utils","[*] landmarkd "+x+ "  "+y);
+            drawRect(bitmap,new Rect(x-1,y-1,x+2,y+2));
+        }
     }
     //Flip alone diagonal
     //对角线翻转。data大小原先为h*w*stride，翻转后变成w*h*stride

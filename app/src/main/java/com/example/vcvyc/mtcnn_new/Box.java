@@ -3,6 +3,7 @@ package com.example.vcvyc.mtcnn_new;
   MTCNN For Android
   by cjf@xmu 20180625
  */
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -13,10 +14,12 @@ public class Box {
     public  float score;
     public  float[] bbr;  //bounding box regression
     public  boolean deleted;
+    public  Point[] landmark;
     Box(){
         box=new int[4];
         bbr=new float[4];
         deleted=false;
+        landmark=new Point[5];
     }
     public int left(){return box[0];}
     public int right(){return box[2];}
