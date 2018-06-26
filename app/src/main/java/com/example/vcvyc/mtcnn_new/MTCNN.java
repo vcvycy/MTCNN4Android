@@ -26,7 +26,7 @@ import static java.lang.Math.scalb;
 
 public class MTCNN {
     //参数
-    private float factor=0.709f;
+    private float factor=0.79f;
     private float PNetThreshold=0.6f;
     private float RNetThreshold=0.7f;
     private float ONetThreshold=0.7f;
@@ -40,6 +40,7 @@ public class MTCNN {
     private static final String   ONetInName  ="onet/input:0";
     private static final String[] ONetOutName =new String[]{ "onet/prob1:0","onet/conv6-2/conv6-2:0","onet/conv6-3/conv6-3:0"};
     //安卓相关
+    public  long lastProcessTime;   //最后一张图片处理的时间ms
     private static final String TAG="MTCNN";
     private AssetManager assetManager;
     private TensorFlowInferenceInterface inferenceInterface;
@@ -180,7 +181,7 @@ public class MTCNN {
                     box.box[3]=Math.round((y*2+11)/scale);
                     //bbr
                     for(int i=0;i<4;i++)
-                      box.bbr[i]=bias[y][x][i];
+                        box.bbr[i]=bias[y][x][i];
                     //add
                     boxes.addElement(box);
                 }
@@ -236,27 +237,27 @@ public class MTCNN {
     }
     //截取box中指定的矩形框(越界要处理)，并resize到size*size大小，返回数据存放到data中。
     public Bitmap tmp_bm;
-   private void crop_and_resize(Bitmap bitmap,Box box,int size,float[] data){
+    private void crop_and_resize(Bitmap bitmap,Box box,int size,float[] data){
         //(2)crop and resize
-       Matrix matrix = new Matrix();
-       float scale=1.0f*size/box.width();
-       matrix.postScale(scale, scale);
-       Bitmap croped=Bitmap.createBitmap(bitmap, box.left(),box.top(),box.width(), box.height(),matrix,true);
-       //(3)save
-       int[] pixels_buf=new int[size*size];
-       croped.getPixels(pixels_buf,0,croped.getWidth(),0,0,croped.getWidth(),croped.getHeight());
-       float imageMean=127.5f;
-       float imageStd=128;
-       for (int i=0;i<pixels_buf.length;i++){
-           final int val=pixels_buf[i];
-           data[i * 3 + 0] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
-           data[i * 3 + 1] = (((val >> 8) & 0xFF) - imageMean) / imageStd;
-           data[i * 3 + 2] = ((val & 0xFF) - imageMean) / imageStd;
-       }
-   }
-   /*
-    * RNET跑神经网络，将score和bias写入boxes
-    */
+        Matrix matrix = new Matrix();
+        float scale=1.0f*size/box.width();
+        matrix.postScale(scale, scale);
+        Bitmap croped=Bitmap.createBitmap(bitmap, box.left(),box.top(),box.width(), box.height(),matrix,true);
+        //(3)save
+        int[] pixels_buf=new int[size*size];
+        croped.getPixels(pixels_buf,0,croped.getWidth(),0,0,croped.getWidth(),croped.getHeight());
+        float imageMean=127.5f;
+        float imageStd=128;
+        for (int i=0;i<pixels_buf.length;i++){
+            final int val=pixels_buf[i];
+            data[i * 3 + 0] = (((val >> 16) & 0xFF) - imageMean) / imageStd;
+            data[i * 3 + 1] = (((val >> 8) & 0xFF) - imageMean) / imageStd;
+            data[i * 3 + 2] = ((val & 0xFF) - imageMean) / imageStd;
+        }
+    }
+    /*
+     * RNET跑神经网络，将score和bias写入boxes
+     */
     private void RNetForward(float[] RNetIn,Vector<Box>boxes){
         int num=RNetIn.length/24/24/3;
         //feed & run
@@ -320,12 +321,13 @@ public class MTCNN {
             //bias
             for (int j=0;j<4;j++)
                 boxes.get(i).bbr[j]=ONetB[i*4+j];
+
             //landmark
             for (int j=0;j<5;j++) {
-                int x=(int) ONetL[i * 10 + j * 2];
-                int y= (int) ONetL[i * 10 + j * 2 + 1];
+                int x=boxes.get(i).left()+(int) (ONetL[i * 10 + j]*boxes.get(i).width());
+                int y= boxes.get(i).top()+(int) (ONetL[i * 10 + j +5]*boxes.get(i).height());
                 boxes.get(i).landmark[j] = new Point(x,y);
-                Log.i(TAG,"[*] landmarkd "+x+ "  "+y);
+                //Log.i(TAG,"[*] landmarkd "+x+ "  "+y);
             }
         }
     }
@@ -356,7 +358,7 @@ public class MTCNN {
         //square
         for (int i=0;i<boxes.size();i++) {
             boxes.get(i).toSquareShape();
-            boxes.get(i).limit(w,h);
+            boxes.get(i).limit_square(w,h);
         }
     }
     /*
@@ -377,7 +379,8 @@ public class MTCNN {
         //【3】ONet
         boxes=ONet(bitmap,boxes);
         //return
-         Log.i(TAG,"[*]Time:"+(System.currentTimeMillis()-t_start));
+        Log.i(TAG,"[*]Mtcnn Detection Time:"+(System.currentTimeMillis()-t_start));
+        lastProcessTime=(System.currentTimeMillis()-t_start);
         return  boxes;
     }
 }

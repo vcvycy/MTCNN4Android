@@ -8,21 +8,20 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="361dp"
-        android:layout_height="331dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="591dp"
+        android:layout_height="824dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@android:color/holo_blue_bright" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="331dp"
-        android:layout_height="332dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:srcCompat="@android:color/holo_green_light" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="510dp"
+        android:layout_height="79dp"
+        android:text="点击图片更换其他图片[click image to select other pictures]"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp" />
+
 </android.support.constraint.ConstraintLayout>

@@ -3,13 +3,16 @@ package com.example.vcvyc.mtcnn_new;
   MTCNN For Android
   by cjf@xmu 20180625
  */
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -18,6 +21,8 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
     String TAG="MainActivity";
+    ImageView imageView;
+    Bitmap bitmap;
     private  Bitmap readFromAssets(String filename){
         Bitmap bitmap;
         AssetManager asm=getAssets();
@@ -32,38 +37,46 @@ public class MainActivity extends AppCompatActivity {
         }
         return Utils.copyBitmap(bitmap); //返回mutable的image
     }
-    public void showImage(Bitmap bm,int rid){
-        ((ImageView)findViewById(rid)).setImageBitmap(bm);
-        Log.i(TAG,"[*]showImage width:"+bm.getWidth()+" Height:"+bm.getHeight());
-    }
-    public void showPixel(int v){
-        Log.i(TAG,"[*]Pixel:R"+((v>>16)&0xff)+"G:"+((v>>8)&0xff)+ " B:"+(v&0xff));
-    }
-    public void myMain(){
-        String TAG="MainActivity";
-        MTCNN mtcnn=new MTCNN(getAssets());
-        Bitmap bitmap=readFromAssets("hz.JPG");
-        /*
+    MTCNN mtcnn;
+    public void processImage(){
+        Bitmap bm= Utils.copyBitmap(bitmap);
         try {
-            int[] tmp=new int[bitmap.getWidth()*bitmap.getHeight()];
-            bitmap.getPixels(tmp,0,bitmap.getWidth(),0,0,bitmap.getWidth(),bitmap.getHeight());
-            showPixel(tmp[bitmap.getWidth()*50+100]);
-        }catch (Exception e){
-            Log.i(TAG,"[*]exception:"+e);
-        }*/
-        //Bitmap bitmap=readFromAssets("ttt.jpg");
-        try {
-            Vector<Box> boxes=mtcnn.detectFaces(bitmap,35);
+            Vector<Box> boxes=mtcnn.detectFaces(bm,80);
             for (int i=0;i<boxes.size();i++){
-                Utils.drawRect(bitmap,boxes.get(i).transform2Rect());
-                Utils.drawLandmark(bitmap,boxes.get(i).landmark);
+                Utils.drawRect(bm,boxes.get(i).transform2Rect());
+                Utils.drawPoints(bm,boxes.get(i).landmark);
             }
-            showImage(bitmap,R.id.imageView);
-            if (mtcnn.tmp_bm!=null)
-                showImage(mtcnn.tmp_bm,R.id.imageView2);
+            imageView.setImageBitmap(bm);
         }catch (Exception e){
             Log.e(TAG,"[*]detect false:"+e);
         }
+    }
+    public void myMain(){
+        imageView =(ImageView)findViewById(R.id.imageView);
+        bitmap=readFromAssets("2.jpg");
+        mtcnn=new MTCNN(getAssets());
+        processImage();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(Intent.ACTION_PICK,null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+                startActivityForResult(intent, 0x1);
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        if(data==null)return;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+            processImage();
+        }catch (Exception e){
+            Log.d("MainActivity","[*]"+e);
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

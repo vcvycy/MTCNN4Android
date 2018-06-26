@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class Box {
     public  int[] box; //left:box[0],top:box[1],right:box[2],bottom:box[3]
@@ -25,8 +26,8 @@ public class Box {
     public int right(){return box[2];}
     public int top(){return box[1];}
     public int bottom(){return box[2];}
-    public int width(){return box[2]-box[0];}
-    public int height(){return box[3]-box[1];}
+    public int width(){return box[2]-box[0]+1;}
+    public int height(){return box[3]-box[1]+1;}
     //转为rect
     public Rect transform2Rect(){
         Rect rect=new Rect();
@@ -38,7 +39,7 @@ public class Box {
     }
     //面积
     public  int area(){
-        return (box[2]-box[0]+1)*(box[3]-box[1]+1);
+        return width()*height();
     }
     //Bounding Box Regression
     public void calibrate(){
@@ -62,12 +63,8 @@ public class Box {
             box[2]+=(h-w+1)/2;
         }
     }
-    //防止边界溢出
-    public void limit(int w,int h){
-        if(box[0]<0){
-            int len=-box[0];
-
-        }
+    //防止边界溢出，并维持square大小
+    public void limit_square(int w,int h){
         if (box[0]<0 || box[1]<0){
             int len=max(-box[0],-box[1]);
             box[0]+=len;
@@ -75,8 +72,32 @@ public class Box {
         }
         if (box[2]>=w || box[3]>=h){
             int len=max(box[2]-w+1,box[3]-h+1);
-            box[2]+=len;
-            box[3]+=len;
+            box[2]-=len;
+            box[3]-=len;
+        }
+    }
+    public void limit_square2(int w,int h){
+        if (width() > w) box[2]-=width()-w;
+        if (height()> h) box[3]-=height()-h;
+        if (box[0]<0){
+            int sz=-box[0];
+            box[0]+=sz;
+            box[2]+=sz;
+        }
+        if (box[1]<0){
+            int sz=-box[1];
+            box[1]+=sz;
+            box[3]+=sz;
+        }
+        if (box[2]>=w){
+            int sz=box[2]-w+1;
+            box[2]-=sz;
+            box[0]-=sz;
+        }
+        if (box[3]>=h){
+            int sz=box[3]-h+1;
+            box[3]-=sz;
+            box[1]-=sz;
         }
     }
 }

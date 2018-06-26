@@ -15,9 +15,11 @@ import android.widget.ImageView;
 import java.util.Vector;
 
 public class Utils {
+    //复制图片，并设置isMutable=true
     public static Bitmap copyBitmap(Bitmap bitmap){
         return bitmap.copy(bitmap.getConfig(),true);
     }
+    //在bitmap中画矩形
     public static void drawRect(Bitmap bitmap,Rect rect){
         try {
             Canvas canvas = new Canvas(bitmap);
@@ -33,12 +35,13 @@ public class Utils {
             Log.i("Utils","[*] error"+e);
         }
     }
-    public static void drawLandmark(Bitmap bitmap, Point[] landmark){
+    //在图中画点
+    public static void drawPoints(Bitmap bitmap, Point[] landmark){
         for (int i=0;i<landmark.length;i++){
             int x=landmark[i].x;
             int y=landmark[i].y;
             //Log.i("Utils","[*] landmarkd "+x+ "  "+y);
-            drawRect(bitmap,new Rect(x-1,y-1,x+2,y+2));
+            drawRect(bitmap,new Rect(x-1,y-1,x+1,y+1));
         }
     }
     //Flip alone diagonal
