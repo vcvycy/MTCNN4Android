@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public void processImage(){
         Bitmap bm= Utils.copyBitmap(bitmap);
         try {
-            Vector<Box> boxes=mtcnn.detectFaces(bm,80);
+            Vector<Box> boxes=mtcnn.detectFaces(bm,40);
             for (int i=0;i<boxes.size();i++){
                 Utils.drawRect(bm,boxes.get(i).transform2Rect());
                 Utils.drawPoints(bm,boxes.get(i).landmark);

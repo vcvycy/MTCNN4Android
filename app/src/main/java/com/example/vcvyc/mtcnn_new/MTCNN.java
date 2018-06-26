@@ -26,7 +26,7 @@ import static java.lang.Math.scalb;
 
 public class MTCNN {
     //参数
-    private float factor=0.79f;
+    private float factor=0.709f;
     private float PNetThreshold=0.6f;
     private float RNetThreshold=0.7f;
     private float ONetThreshold=0.7f;
@@ -68,7 +68,6 @@ public class MTCNN {
         bitmap.getPixels(intValues,0,bitmap.getWidth(),0,0,bitmap.getWidth(),bitmap.getHeight());
         float imageMean=127.5f;
         float imageStd=128;
-        //Log.i(TAG,"[*]INPUT SIZE:"+w*h);
 
         for (int i=0;i<intValues.length;i++){
             final int val=intValues[i];
