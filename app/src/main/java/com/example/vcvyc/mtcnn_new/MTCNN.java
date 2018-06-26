@@ -98,7 +98,6 @@ public class MTCNN {
 
         float[] PNetIn=normalizeImage(bitmap);
         Utils.flip_diag(PNetIn,h,w,3); //沿着对角线翻转
-        //注意！！此处先h后w！！！找了N久的错误！
         inferenceInterface.feed(PNetInName,PNetIn,1,w,h,3);
         inferenceInterface.run(PNetOutName,false);
         int PNetOutSizeW=(int)Math.ceil(w*0.5-5);
@@ -127,8 +126,8 @@ public class MTCNN {
     //Non-Maximum Suppression
     //nms，不符合条件的deleted设置为true
     private void nms(Vector<Box> boxes,float threshold,String method){
-        //NMS，从high-confident区域开始枚举
-        int delete_cnt=0;
+        //NMS.两两比对
+        //int delete_cnt=0;
         for(int i=0;i<boxes.size();i++) {
             Box box = boxes.get(i);
             if (!box.deleted) {
@@ -147,13 +146,12 @@ public class MTCNN {
                             iou = 1.0f*areaIoU / (box.area() + box2.area() - areaIoU);
                         else if (method.equals("Min"))
                             iou= 1.0f*areaIoU / (min(box.area(),box2.area()));
-
                         if (iou >= threshold) { //删除prob小的那个框
                             if (box.score>box2.score)
                                 box2.deleted=true;
                             else
                                 box.deleted=true;
-                            delete_cnt++;
+                            //delete_cnt++;
                         }
                     }
                 }
@@ -332,7 +330,7 @@ public class MTCNN {
     }
     //ONet
     private Vector<Box> ONet(Bitmap bitmap,Vector<Box> boxes){
-        //RNet Input Init
+        //ONet Input Init
         int num=boxes.size();
         float[] ONetIn=new float[num*48*48*3];
         float[] curCrop=new float[48*48*3];

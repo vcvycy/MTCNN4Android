@@ -11,11 +11,11 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Box {
-    public  int[] box; //left:box[0],top:box[1],right:box[2],bottom:box[3]
-    public  float score;
-    public  float[] bbr;  //bounding box regression
+    public  int[] box;       //left:box[0],top:box[1],right:box[2],bottom:box[3]
+    public  float score;    //probability
+    public  float[] bbr;    //bounding box regression
     public  boolean deleted;
-    public  Point[] landmark;
+    public  Point[] landmark; //facial landmark.只有ONet输出Landmark
     Box(){
         box=new int[4];
         bbr=new float[4];
