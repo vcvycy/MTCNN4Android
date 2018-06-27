@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void myMain(){
         imageView =(ImageView)findViewById(R.id.imageView);
-        bitmap=readFromAssets("2.jpg");
+        bitmap=readFromAssets("trump2.jpg");
         mtcnn=new MTCNN(getAssets());
         processImage();
         imageView.setOnClickListener(new View.OnClickListener() {

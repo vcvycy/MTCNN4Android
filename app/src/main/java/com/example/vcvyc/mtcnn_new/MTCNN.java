@@ -128,6 +128,7 @@ public class MTCNN {
     private void nms(Vector<Box> boxes,float threshold,String method){
         //NMS.两两比对
         //int delete_cnt=0;
+        int cnt=0;
         for(int i=0;i<boxes.size();i++) {
             Box box = boxes.get(i);
             if (!box.deleted) {
@@ -144,8 +145,10 @@ public class MTCNN {
                         float iou=0f;
                         if (method.equals("Union"))
                             iou = 1.0f*areaIoU / (box.area() + box2.area() - areaIoU);
-                        else if (method.equals("Min"))
-                            iou= 1.0f*areaIoU / (min(box.area(),box2.area()));
+                        else if (method.equals("Min")) {
+                            iou = 1.0f * areaIoU / (min(box.area(), box2.area()));
+                            Log.i(TAG,"[*]iou="+iou);
+                        }
                         if (iou >= threshold) { //删除prob小的那个框
                             if (box.score>box2.score)
                                 box2.deleted=true;
@@ -346,9 +349,9 @@ public class MTCNN {
         for (int i=0;i<num;i++)
             if (boxes.get(i).score<ONetThreshold)
                 boxes.get(i).deleted=true;
+        BoundingBoxReggression(boxes);
         //Nms
         nms(boxes,0.7f,"Min");
-        BoundingBoxReggression(boxes);
         return Utils.updateBoxes(boxes);
     }
     private void square_limit(Vector<Box>boxes,int w,int h){
@@ -361,7 +364,7 @@ public class MTCNN {
     /*
      * 参数：
      *   bitmap:要处理的图片
-     *   minFaceSize:最小的人脸
+     *   minFaceSize:最小的人脸像素值.(此值越大，检测越快)
      * 返回：
      *   人脸框
      */
