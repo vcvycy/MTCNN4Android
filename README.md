@@ -2,7 +2,7 @@
 MTCNN For Android Java<br>
 <i>主要参考MTCNN论文和Facenet中MTCNN的实现，纯Java实现。为了方便java调用，我先把npy转为pb。</i>
 
-* 编译环境：Android 3.1.2
+* 编译环境：Android Studio3.1.2
 * 核心类MTCNN用法 (MTCNN.Java)
   * 类实例化 MTCNN mtcnn=new MTCNN(getAssets())
   * 只有1个API：public Vector<Box> detectFaces(Bitmap bitmap,int minFaceSize)
