@@ -292,7 +292,7 @@ public class MTCNN {
         RNetForward(RNetIn,boxes);
         //RNetThreshold
         for (int i=0;i<num;i++)
-            if (boxes.get(i).score<PNetThreshold)
+            if (boxes.get(i).score<RNetThreshold)
                 boxes.get(i).deleted=true;
         //Nms
         nms(boxes,0.7f,"Union");
