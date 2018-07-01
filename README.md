@@ -4,7 +4,10 @@ MTCNN For Android Java<br>
 
 * 编译环境：Android 3.1.2
 * 核心API
-效果图：
+  *skdf
+  *fdksjf
+
+#运行效果：
 ![Alt text](Screenshot_20180626-112620.png) <br>
 ![Alt text](Screenshot_20180626-112635.png) <br>
 ![Alt text](Screenshot_20180626-112651.png) <br>
