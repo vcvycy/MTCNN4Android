@@ -25,7 +25,7 @@ public class Box {
     public int left(){return box[0];}
     public int right(){return box[2];}
     public int top(){return box[1];}
-    public int bottom(){return box[2];}
+    public int bottom(){return box[3];}
     public int width(){return box[2]-box[0]+1;}
     public int height(){return box[3]-box[1]+1;}
     //转为rect

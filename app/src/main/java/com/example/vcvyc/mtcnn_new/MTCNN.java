@@ -170,7 +170,7 @@ public class MTCNN {
             for (int x=0;x<w;x++){
                 float score=prob[y][x];
                 //only accept prob >threadshold(0.6 here)
-                if (score>PNetThreshold){
+                if (score>threshold){
                     Box box=new Box();
                     //score
                     box.score=score;
