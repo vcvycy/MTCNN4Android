@@ -19,10 +19,10 @@ MTCNN For Android Java<br>
 * Core Class MTCNN (see file MTCNN.Java) 
   * Get Instance : MTCNN mtcnn=new MTCNN(getAssets())
   * It is easy to use ,here is the core API:
-    * public Vector<Box> detectFaces(Bitmap bitmap,int minFaceSize)
-    * [parameter] bitmap : Image to process
-    * [parameter] minFaceSize： minimum face size in pixels.(The speed will be faster when minFaceSize is bigger)
-    * [Return Value]: Position of All faces(And their correspoinding facial landmarks(2*mouse+1*nose+2*eyes).
+    * <b> public Vector<Box> detectFaces(Bitmap bitmap,int minFaceSize) </b>
+      * [parameter] bitmap : Image to process
+      * [parameter] minFaceSize： minimum face size in pixels.(The speed will be faster when minFaceSize is bigger)
+      * [Return Value]: Position of All faces(And their correspoinding facial landmarks(2*mouse+1*nose+2*eyes).
  
 # Result ：
 ![Alt text](Screenshot_20180626-112620.png) <br>
