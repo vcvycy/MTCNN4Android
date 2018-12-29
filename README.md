@@ -12,7 +12,7 @@ MTCNN For Android Java<br>
       * [parameter] minFaceSize： minimum face size in pixels.(The speed will be faster when minFaceSize is bigger)
       * [Return Value]: Position of All faces(And their correspoinding facial landmarks(2*mouse+1*nose+2*eyes).
  
-# MTCNN4Android 【Chinese】 
+# MTCNN4Android 
 MTCNN For Android Java<br>
 <i>主要参考MTCNN论文和Facenet中MTCNN的实现，纯Java实现。为了方便java调用，我先把npy转为pb。</i>
 
