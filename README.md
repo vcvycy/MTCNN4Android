@@ -1,5 +1,3 @@
-[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
-[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 # MTCNN4Android
 MTCNN For Android Java<br>
 <i> This project is the Android implementaion of MTCNN face detection. </i>
