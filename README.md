@@ -1,6 +1,6 @@
 # MTCNN4Android
 MTCNN For Android Java<br>
-<i> This project is the Android implementaion of MTCNN face detection. </i>
+<i> This project is the Android implementation of MTCNN face detection. </i>
 <i> I use the pretrained model in Google's Facenet project and transfrom the the .npy files into one .pb file first.</i> 
 
 * IDE：Android Studio3.1.2
